@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lägg till jobb</title>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="/index.html">Startsida</a> - <a href="/add.html">Lägg till jobb</a> - <a
+                href="/about.html">Om</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Lägg till jobb</h1>
+
+        <div class="form-container">
+
+            <form id="jobForm">
+                <label for="companyname">Företagsnamn:</label>
+                <input type="text" id="companyname" required />
+                <br />
+                <label for="jobtitle">Jobbtitel:</label>
+                <input type="text" id="jobtitle" required />
+                <br />
+                <label for="location">Plats:</label>
+                <input type="text" id="location" required />
+                <br />
+                <label for="startdate">Startdatum:</label>
+                <input type="date" id="startdate" required />
+                <br />
+                <label for="enddate">Slutdatum:</label>
+                <input type="date" id="enddate" required />
+                <br />
+                <label for="description">Beskrivning:</label>
+                <textarea id="description" required></textarea>
+                <br />
+                <button type="submit">Spara jobb</button>
+
+            </form>
+        </div>
+        <div id="error-message" style="color: red;"></div>
+
+    </main>
+
+    <footer>
+        <p> Lab 2 backend-baserad webbutveckling av Rune Granath</p>
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>

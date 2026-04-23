@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="sv">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab 2 backend-baserad webbutveckling</title>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <a href="/index.html">Startsida</a> - <a href="/add.html">Lägg till jobb</a> - <a href="/about.html">Om</a>
+    </nav>
+  </header>
+  <main>
+    <div class="table-container">
+      <table id="jobsTable">
+        <thead>
+          <tr>
+            <th>Företagsnamn</th>
+            <th>Jobbtitel</th>
+            <th>Plats</th>
+            <th>Startdatum</th>
+            <th>Slutdatum</th>
+            <th>Beskrivning</th>
+            <th>Radera</th>
+          </tr>
+        </thead>
+        <tbody id="jobBody">
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer>
+    <p> Lab 2 backend-baserad webbutveckling av Rune Granath</p>
+  </footer>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
