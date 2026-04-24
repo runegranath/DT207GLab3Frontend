@@ -14,20 +14,34 @@ const jobForm = document.getElementById("jobForm");
 
 if (jobForm) {
   jobForm.addEventListener("submit", async (event) => {
-    event.preventDefault(); // Hindrar sidan från att laddas om
+    event.preventDefault();
 
-    // Samla in datan från formuläret
-    const newJob = {
-      companyname: document.getElementById("companyname").value,
-      jobtitle: document.getElementById("jobtitle").value,
-      location: document.getElementById("location").value,
-      fictive: document.getElementById("fictive").checked,
-    };
+    // trimma värden för att undvika mellanslag
+    const companyname = document.getElementById("companyname").value.trim();
+    const jobtitle = document.getElementById("jobtitle").value.trim();
+    const location = document.getElementById("location").value.trim();
+    const fictive = document.getElementById("fictive").checked;
+    const errorDiv = document.getElementById("error-message");
+
+    if (errorDiv) errorDiv.innerText = ""; // Rensa gamla felmeddelanden
+
+    // Validering och samla errors i array
+    let errors = [];
+    if (companyname === "") errors.push("Du måste ange ett företagsnamn.");
+    if (jobtitle === "") errors.push("Du måste ange en jobbtitel.");
+    if (location === "") errors.push("Du måste ange en plats.");
+
+    if (errors.length > 0) {
+      errorDiv.innerHTML = errors.join("<br>"); // Visa alla felmeddelanden i errorDiv med radbrytning
+      return; // Stoppar fetch vid fel
+    }
+
+    // Skapa nytt jobb-objekt
+    const newJob = { companyname, jobtitle, location, fictive };
+
     if (window.editingId) {
-      // Uppdatera jobb om det finns ett jobbID här
       await updateJob(window.editingId, newJob);
     } else {
-      // väntar på addJob innan vi gör något annat
       await addJob(newJob);
     }
   });
@@ -35,12 +49,11 @@ if (jobForm) {
 
 async function addJob(newJob) {
   const errorDiv = document.getElementById("error-message");
-  errorDiv.innerText = "";
 
   try {
     // Fetch-anrop
     const response = await fetch(
-      `https://dt207glab3backend.onrender.com/jobs`, 
+      `https://dt207glab3backend.onrender.com/jobs`,
       {
         // Skicka data som JSON
         method: "POST",
@@ -123,16 +136,13 @@ async function deleteJob(id) {
   }
 }
 
-// Navigera till add.html med ID i query string för redigering vid klick på ändra-knappen
-function editJob(id) {
-  window.location.href = `add.html?edit=${id}`;
-}
-
 // Förbered formuläret för redigering
 async function prepareEdit(id) {
   try {
     // Hämta det specifika jobbet
-    const response = await fetch(`https://dt207glab3backend.onrender.com/jobs/${id}`);
+    const response = await fetch(
+      `https://dt207glab3backend.onrender.com/jobs/${id}`,
+    );
 
     // vid felaktigt svar
     if (!response.ok) throw new Error("Kunde inte hämta jobb");
@@ -150,11 +160,16 @@ async function prepareEdit(id) {
 
     const submitBtn = document.querySelector("#jobForm button");
     if (submitBtn) {
-      submitBtn.textContent = "Uppdatera jobb"; // Ändra knapptexten för att visa att det är en uppdatering
+      submitBtn.textContent = "Uppdatera jobb"; // Ändra knapptexten för att understryka att vi uppdaterar
     }
   } catch (error) {
     console.error(error);
   }
+}
+
+// Navigera till add.html och skicka med ID i query string för redigering vid klick på ändra-knappen
+function editJob(id) {
+  window.location.href = `add.html?edit=${id}`;
 }
 
 async function updateJob(id, updatedJobData) {
