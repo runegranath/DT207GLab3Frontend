@@ -23,9 +23,13 @@ if (jobForm) {
       location: document.getElementById("location").value,
       fictive: document.getElementById("fictive").checked,
     };
-
-    // väntar på addJob innan vi gör något annat
-    await addJob(newJob);
+    if (window.editingJobId) {
+      // Uppdatera jobb om det finns ett jobbID här
+      await updateJob(window.editingJobId, newJob);
+    } else {
+      // väntar på addJob innan vi gör något annat
+      await addJob(newJob);
+    }
   });
 }
 
@@ -88,8 +92,18 @@ function displayJobs(jobs) {
       deleteJob(job._id); // _id för mongoDB
     });
 
-    // Lägg till knappen i sista cellen
+    // Redigera-knapp
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "Ändra";
+    editBtn.className = "edit-btn";
+
+    editBtn.addEventListener("click", () => {
+      editJob(job._id);
+    });
+
+    // Lägg till knappar i sista cellen
     row.querySelector("td:last-child")?.appendChild(deleteBtn);
+    row.querySelector("td:last-child")?.appendChild(editBtn);
 
     // Lägg till raden i tabellen
     tableBody.appendChild(row);
@@ -106,5 +120,46 @@ async function deleteJob(id) {
 
     // Uppdatera listan efter radering
     getJobs();
+  }
+}
+
+// hämtar data från ett jobb och fyller i formuläret för redigering
+async function editJob(id) {
+  try {
+    const response = await fetch(
+      `https://dt207glab3backend.onrender.com/jobs/${id}`,
+    );
+    const job = await response.json();
+
+    // Fyll i formuläret med befintlig data
+    document.getElementById("companyname").value = job.companyname;
+    document.getElementById("jobtitle").value = job.jobtitle;
+    document.getElementById("location").value = job.location;
+    document.getElementById("fictive").checked = job.fictive;
+
+    // Spara redigeringen i global variabel för att koppla det till rätt jobb vid uppdatering
+    window.editingJobId = id;
+    document.querySelector("#jobForm button").textContent = "Uppdatera jobb";
+  } catch (error) {
+    console.error("Kunde inte uppdatera jobb", error);
+  }
+}
+
+async function updateJob(id, updatedJobData) {
+  try {
+    await fetch(`https://dt207glab3backend.onrender.com/jobs/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedJobData), // skickar in nya värden från formuläret
+    });
+
+    // Rensa globala variabler med null och återställ formuläret
+    window.editingJobId = null; 
+    jobForm.reset();
+    document.querySelector("#jobForm button").textContent = "Spara jobb";
+    
+    getJobs(); // Uppdatera listan 
+  } catch (error) {
+    console.error("Kunde inte spara ändringarna", error);
   }
 }
