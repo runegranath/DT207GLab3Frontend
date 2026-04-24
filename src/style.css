@@ -154,3 +154,20 @@ p {
 footer p {
   text-align: center;
 }
+
+.checkbox-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+#fictive {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  margin: 0;
+}
