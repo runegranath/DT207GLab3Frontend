@@ -27,9 +27,22 @@ if (jobForm) {
 
     // Validering och samla errors i array
     let errors = [];
-    if (companyname === "") errors.push("Du måste ange ett företagsnamn.");
-    if (jobtitle === "") errors.push("Du måste ange en jobbtitel.");
-    if (location === "") errors.push("Du måste ange en plats.");
+
+    if (companyname === "") {
+      errors.push("Företagsnamn saknas.");
+    } else if (companyname.length < 2) {  // validering som faktiskt syns i gränssnittet
+      errors.push("Företagsnamnet måste vara minst 2 tecken");
+    }
+
+    if (jobtitle === "") {
+      errors.push("Jobbtitel saknas.");
+    } else if (jobtitle.length < 5) {
+      errors.push("Jobbtiteln måste vara minst 5 tecken");
+    }
+
+    if (location === "") {
+      errors.push("Du måste ange en plats.");
+    }
 
     if (errors.length > 0) {
       errorDiv.innerHTML = errors.join("<br>"); // Visa alla felmeddelanden i errorDiv med radbrytning
