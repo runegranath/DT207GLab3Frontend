@@ -21,9 +21,7 @@ if (jobForm) {
       companyname: document.getElementById("companyname").value,
       jobtitle: document.getElementById("jobtitle").value,
       location: document.getElementById("location").value,
-      startdate: document.getElementById("startdate").value,
-      enddate: document.getElementById("enddate").value,
-      description: document.getElementById("description").value,
+      fictive: document.getElementById("fictive").checked,
     };
 
     // väntar på addJob innan vi gör något annat
@@ -35,48 +33,17 @@ async function addJob(newJob) {
   const errorDiv = document.getElementById("error-message");
   errorDiv.innerText = "";
 
-  if (newJob.companyname.length < 2) {
-    errorDiv.innerText = "Företagsnamnet är för kort!";
-    return; // Avbryt funktionen här
-  }
-
-  if (newJob.jobtitle.length < 2) {
-    errorDiv.innerText = "Jobbtiteln är för kort!";
-    return;
-  }
-
-  if (newJob.location.length < 2) {
-    errorDiv.innerText = "Platsen är för kort!";
-    return;
-  }
-
-  if (newJob.description.length < 5) {
-    errorDiv.innerText = "Beskrivningen är för kort!";
-    return;
-  }
-
-  if (!newJob.startdate || !newJob.enddate) {
-    errorDiv.innerText = "Start- och slutdatum måste finnas!";
-    return;
-  }
-
-  // Validera att startdatum inte är efter slutdatum
-  const start = new Date(newJob.startdate);
-  const end = new Date(newJob.enddate);
-
-  if (start > end) {
-    errorDiv.innerText = "Startdatum kan inte vara efter slutdatum!";
-    return;
-  }
-
   try {
     // Fetch-anrop
-    const response = await fetch("https://rg-backend-lab2.onrender.com/jobs", {
-      // Skicka data som JSON
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newJob),
-    });
+    const response = await fetch(
+      "https://dt207glab3backend.onrender.com/jobs",
+      {
+        // Skicka data som JSON
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newJob),
+      },
+    );
 
     if (response.ok) {
       // Gå tillbaka till startsidan eller uppdatera listan
@@ -107,10 +74,8 @@ function displayJobs(jobs) {
             <td>${job.companyname}</td>
             <td>${job.jobtitle}</td>
             <td>${job.location}</td>
-            <td>${job.startdate}</td>
-            <td>${job.enddate}</td>
-            <td>${job.description}</td>
-            
+            <td>${job.fictive ? "Ja" : "Nej"}</td>
+
             <td></td> 
         `;
 
@@ -120,7 +85,7 @@ function displayJobs(jobs) {
     deleteBtn.className = "delete-btn";
 
     deleteBtn.addEventListener("click", () => {
-      deleteJob(job.id);
+      deleteJob(job._id); // _id för mongoDB
     });
 
     // Lägg till knappen i sista cellen
@@ -135,7 +100,7 @@ async function deleteJob(id) {
   // Bekräfta radering
   if (confirm("Vill du verkligen radera?")) {
     // Skicka DELETE-förfrågan
-    await fetch(`https://rg-backend-lab2.onrender.com/jobs/${id}`, {
+    await fetch(`https://dt207glab3backend.onrender.com/jobs/${id}`, {
       method: "DELETE",
     });
 
