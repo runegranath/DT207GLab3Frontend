@@ -2,7 +2,7 @@ import "./style.css";
 
 async function getJobs() {
   try {
-    const response = await fetch("https://rg-backend-lab2.onrender.com/jobs");
+    const response = await fetch("https://dt207glab3backend.onrender.com/jobs");
     const jobs = await response.json();
     displayJobs(jobs);
   } catch (error) {
